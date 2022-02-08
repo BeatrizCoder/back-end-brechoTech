@@ -1,0 +1,72 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// preciso criar uma relação entre o produto e a categoria
+model Product {
+  id                Int         @id @default(autoincrement())
+  typeHard          String
+  modelHard         String
+  priceHard         String
+  yearuseHard       Int
+  productPhotosHard String
+  videoHard         String
+  usedHard          String
+  description       String
+  User              User?       @relation(fields: [userId], references: [id])
+  userId            Int?
+  Categorias        Categorias? @relation(fields: [categoriasId], references: [id])
+  categoriasId      String?
+  Vendedor          Vendedor?   @relation(fields: [vendedorId], references: [id])
+  vendedorId        String?
+  updatedAt            DateTime  @updatedAt
+  createdAt            DateTime  @default(now())
+
+}
+
+model User {
+  id       Int       @id @default(autoincrement())
+  nome     String
+  email    String    @unique
+  regiao   String
+  cpf      String
+  password String
+  role String @default("USER")
+  products Product[]
+  updatedAt            DateTime  @updatedAt
+  createdAt            DateTime  @default(now())
+}
+
+model Categorias {
+  id                   String    @id @default(uuid())
+  hardwerEntrada       Boolean @default(false)
+  hardwerSaida         Boolean @default(false)
+  hardwerProcessamento Boolean @default(false)
+  hardwerArmazenamento Boolean @default(false)
+  updatedAt            DateTime  @updatedAt
+  createdAt            DateTime  @default(now())
+  products             Product[]
+}
+
+model Vendedor {
+  id         String    @id @default(uuid())
+  name       String
+  email      String    @unique
+  password   String
+  cpf        String    @unique
+  region     String
+  reputation String?
+  updatedAt  DateTime @updatedAt
+  createdAt  DateTime @default(now())
+  role String @default("VENDOR")
+  products   Product[]
+}
+
